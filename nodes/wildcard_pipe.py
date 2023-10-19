@@ -28,7 +28,7 @@ class DPWildcardPipe:
     def add_to_pipe(self, name, text, delimiter, wildcard_pipe = None) -> tuple[dict[str, list[str]]]:
         if name and text:
             delimiter = self._delimiter_dict[delimiter]
-            values = [x.strip() for x in text.strpi().split(delimiter)]
+            values = [x.strip() for x in text.strip().split(delimiter)]
             return ((wildcard_pipe or {}) | {name: values},)
         else:
             return (wildcard_pipe,)

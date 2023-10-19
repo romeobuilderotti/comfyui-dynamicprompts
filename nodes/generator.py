@@ -23,6 +23,8 @@ class DPGeneratorNode(ABC):
     def get_prompt(self, text: str, seed: int, wildcard_pipe = None) -> tuple[str]:
         if wildcard_pipe:
             wildcard_manager = PipeWildcardManager(wildcard_pipe)
+        else:
+            wildcard_manager = None
         prompt = self.generate_prompt(text, seed, wildcard_manager)
         print(f"Prompt: {prompt}")
 
