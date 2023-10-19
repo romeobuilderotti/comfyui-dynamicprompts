@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from .wildcard_pipe import PipeWildcardManager
+
 
 class DPGeneratorNode(ABC):
     RETURN_TYPES = ("STRING",)
@@ -12,22 +14,20 @@ class DPGeneratorNode(ABC):
             "required": {
                 "text": ("STRING", {"multiline": True, "dynamicPrompts": False}),
                 "seed": ("INT", {"default": 0, "display": "number"}),
-                "autorefresh": (["Yes", "No"], {"default": "No"}),
+            },
+            "optional": {
+                "wildcard_pipe": ("WILDCARD_PIPE",),
             },
         }
 
-    @classmethod
-    def IS_CHANGED(cls, text, seed, autorefresh):
-        # Force re-evaluation of the node
-        if autorefresh == "Yes":
-            return float("NaN")
-
-    def get_prompt(self, text: str, seed: int, autorefresh: str) -> tuple[str]:
-        prompt = self.generate_prompt(text, seed)
+    def get_prompt(self, text: str, seed: int, wildcard_pipe = None) -> tuple[str]:
+        if wildcard_pipe:
+            wildcard_manager = PipeWildcardManager(wildcard_pipe)
+        prompt = self.generate_prompt(text, seed, wildcard_manager)
         print(f"Prompt: {prompt}")
 
         return (prompt,)
 
     @abstractmethod
-    def generate_prompt(self, text: str, seed: int) -> str:
+    def generate_prompt(self, text: str, seed: int, wildcard_manager) -> str:
         ...
